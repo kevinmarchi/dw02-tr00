@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" autocomplete="off">
+    <br>
+    <label for="rua">Rua:</label>
+    <input type="text" id="rua" autocomplete="off">
+    <br>
+    <label for="numero">Número:</label>
+    <input type="number" id="numero" step="1" min="0" autocomplete="off">
+    <br>
+    <label for="cep">CEP:</label>
+    <input type="text" id="cep" autocomplete="off">
+    <br>
+    <label for="regiao">Região</label>
+    <select id="regiao">
+        <option>Sul</option>
+        <option>Sudeste</option>
+        <option>Centro-Oeste</option>
+        <option>Nordeste</option>
+        <option >Norte</option>
+    </select>
+    <br>
+    <label for="estado">Estado:</label>
+    <select id="estado">
+        <option>Santa Catarina</option>
+        <option>Paraná</option>
+        <option>Rio Grande do Sul</option>
+    </select>
+    <br>
+    <label for="municipio">Município</label>
+    <select id="municipio">
+        <option>Rio do Sul</option>
+        <option>Lontras</option>
+        <option>Laurentino</option>
+    </select>
+    <button onclick="informarDados()">Enviar</button>
+
+    <br>
+    <hr>
+    <br>
+
+    <div id="dados"></div>
+
+    <script src="script.js"></script>    
+</body>
+</html>
