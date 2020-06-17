@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>API de Produtos</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <button id="consultar">Consultar</button>
+    <button id="inserir">Inserir</button>
+
+    <div id="container">
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            $("#consultar").click(function () {
+                $("#container").html("");
+                $.getJSON("/api/products", function (data, status) {
+
+                    var tabela = $("<table border='1'></table>")
+                    tabela.append("<tr><td>ID</td><td>Nome</td><td>Preço</td><td>Descrição</td><td>Ações</td></tr>");
+                    $("#container").append(tabela);
+                    $.each(data, function (i, field) {
+                        tabela.append("<tr><td>" + field.id + "</td><td>" + field.name + "</td><td>" + field.price +
+                            "</td><td>" + field.description + "</td><td><a href='#' id='deletar" + i + "'>Deletar</a>" +
+                            "<a href='#' id='alterar" + i + "'>Alterar</a></td>");
+                        tabela.append("</tr>");
+
+                        $("#deletar" + i).on('click', function () {
+                            $.ajax({
+                                url: 'api/products/' + field.id,
+                                type: 'DELETE',
+                                success: function (result) {
+                                    console.log(result);
+                                    if (result == 'OK') {
+                                        $("#consultar").click();
+                                    }
+                                }
+                            });
+                        });
+
+                        $("#alterar" + i).on('click', function () {
+                            var formulario = $("<form id='enviar'></form>")
+                            var labelNome = $("<label>Nome</label>");
+                            formulario.append(labelNome);
+                            var inputNome = $("<input type='text' name='name' id='nome' value='" + field.name + "'>");
+                            formulario.append(inputNome);
+                            var labelPreco = $("<label>Preço</label>");
+                            formulario.append(labelPreco);
+                            var inputPreco = $("<input type='number'name='price' value='" + field.price + "'>");
+                            formulario.append(inputPreco);
+                            var labelDescricao = $("<label>Descrição</label>");
+                            formulario.append(labelDescricao);
+                            var inputDescricao = $("<input type='text' name='description' value='" + field.description + "'>");
+                            formulario.append(inputDescricao);
+                            var botao = $("<button id='enviar'>Enviar</button>");
+                            formulario.append(botao);
+
+                            formulario.submit(function (event) {
+                                event.preventDefault();
+                            });
+                            $("#container").append(formulario);
+
+                            botao.on('click', function () {
+                                $.ajax({
+                                    url: 'api/products/' + field.id,
+                                    type: 'PUT',
+                                    data: "name=" + inputNome.val() + "&price=" + inputPreco.val() + "&description=" + inputDescricao.val(),
+                                    success: function (result) {
+                                        if (result == 'OK') {
+                                            $("#consultar").click();
+                                        }
+                                    }
+                                });
+                            });
+                        });
+                    });
+
+                });
+            });
+
+            $("#inserir").click(function () {
+                $("#container").html("");
+
+                var formulario = $("<form id='enviar'></form>")
+                var labelNome = $("<label>Nome</label>");
+                formulario.append(labelNome);
+                var inputNome = $("<input type='text' name='name' id='nome'>");
+                formulario.append(inputNome);
+                var labelPreco = $("<label>Preço</label>");
+                formulario.append(labelPreco);
+                var inputPreco = $("<input type='number'name='price'>");
+                formulario.append(inputPreco);
+                var labelDescricao = $("<label>Descrição</label>");
+                formulario.append(labelDescricao);
+                var inputDescricao = $("<input type='text' name='description'>");
+                formulario.append(inputDescricao);
+                var botao = $("<button id='enviar'>Enviar</button>");
+                formulario.append(botao);
+
+                formulario.submit(function (event) {
+                    event.preventDefault();
+                });
+
+                botao.on('click', function () {
+
+                    $.post("api/products", { name: inputNome.val(), price: inputPreco.val(), description: inputDescricao.val() }, function (data, status) {
+                        console.log("Data: " + data + "\nStatus: " + status);
+
+                        if (data == 'OK') {
+                            $("#consultar").click();
+                        }
+                    });
+
+                });
+
+                $("#container").append(formulario);
+            });
+
+        });
+    </script>
+</body>
+
+</html>
